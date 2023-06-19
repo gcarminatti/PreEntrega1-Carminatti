@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const CartManager = require("../routes/cartManager"); 
+const CartManager = require("../routes/cartManager");
 
-const cartManager = new CartManager('../data/carts.json');
+const cartManager = new CartManager("../data/carts.json");
 
 router.post("/:cid/product/:pid", (req, res) => {
+  // Endpoint para agregar un producto al carrito pasando el ID del carrito y el ID del producto
   const { cid, pid } = req.params;
 
   let cart = cartManager.getCartById(cid);
@@ -21,9 +22,10 @@ router.post("/:cid/product/:pid", (req, res) => {
 });
 
 router.get("/:cid", (req, res) => {
+  //Endpoint para traer un carrito en base al ID
   const { cid } = req.params;
 
-  const cart = cartManager.getCartById(cid); 
+  const cart = cartManager.getCartById(cid);
   if (cart) {
     res.json(cart.products);
   } else {
@@ -31,13 +33,9 @@ router.get("/:cid", (req, res) => {
   }
 });
 
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   const carts = productManager.getAllCarts();
   res.json(carts);
 });
 
-module.exports = {router,cartManager};
-
-
-
-
+module.exports = { router, cartManager };
