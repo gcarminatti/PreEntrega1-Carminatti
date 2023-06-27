@@ -35,6 +35,11 @@ router.post("/", (req, res) => {
     thumbnails,
   } = req.body;
 
+  if (!title || !price || !category) {
+    res.status(400).json({ error: "Todos los campos son requeridos" });
+    return;
+  }
+
   const newProduct = productManager.addProduct({
     title,
     description,
@@ -65,7 +70,8 @@ router.put("/:pid", (req, res) => {
 
 // Ruta DELETE /:pid
 router.delete("/:pid", (req, res) => {
-  const { pid } = req.params;
+  let { pid } = req.params;
+  pid = parseInt(pid);
 
   const deleted = productManager.deleteProduct(pid);
 

@@ -3,9 +3,9 @@ const fs = require("fs");
 class CartManager {
   //Creamos constructor del carrito que recibe el path que es la ruta hacia el archivo.
   constructor(path) {
-    this.carts = [];
     this.path = path;
-    this.carts = this.loadCarts();
+    this.carts = [];
+    this.loadCarts();
   }
 
   createCart() {
@@ -16,12 +16,14 @@ class CartManager {
       products: [],
     };
     this.carts.push(newCart);
+    this.saveCarts();
     return newCart;
   }
 
   getCartById(cartId) {
     // Retornamos el ID carrito pasado a nuestra api
-    return this.carts.find((cart) => cart.id === cartId);
+    const cartbById = this.carts.find((cart) => cart.id === cartId);
+    return cartbById;
   }
 
   getAllCarts() {
@@ -53,19 +55,20 @@ class CartManager {
   }
 
   saveCarts() {
-    // Convertimos a Json y guardamos utilizando el archivo especificado en this.path
     const cartsData = JSON.stringify(this.carts, null, 2);
+    console.log("Contenido de cartsDataasdadasdsa:", cartsData);
 
     fs.writeFileSync(this.path, cartsData, "utf8");
+    console.log("Carritos guardados en el archivo:", this.path);
   }
 
   loadCarts() {
-    //Cargamos el archivo desde el inicio con readFileSync y en caso de no existir mostramos un arreglo vacio
     try {
       const data = fs.readFileSync(this.path, "utf8");
-      this.carts = JSON.parse(data);
+      return JSON.parse(data);
     } catch (error) {
-      this.carts = [];
+      console.error("Error al cargar los carritos:", error);
+      return [];
     }
   }
 }

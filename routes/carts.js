@@ -4,25 +4,29 @@ const CartManager = require("../routes/cartManager");
 
 const cartManager = new CartManager("../data/carts.json");
 
-router.post("/:cid/product/:pid", (req, res) => {
-  // Endpoint para agregar un producto al carrito pasando el ID del carrito y el ID del producto
+router.post("/:cid/products/:pid", (req, res) => {
   const { cid, pid } = req.params;
 
   let cart = cartManager.getCartById(cid);
 
   if (!cart) {
     cart = cartManager.createCart();
+  } else {
+    cartManager.addItemToCart(cid, product);
   }
 
-  const product = { id: pid };
+  const product = {
+    id: pid,
+    title: req.body.title,
+    description: req.body.description,
+    price: req.body.price,
+  };
 
   cart.products.push(product);
-
   res.json(cart);
 });
 
 router.get("/:cid", (req, res) => {
-  //Endpoint para traer un carrito en base al ID
   const { cid } = req.params;
 
   const cart = cartManager.getCartById(cid);
@@ -34,7 +38,8 @@ router.get("/:cid", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  const carts = productManager.getAllCarts();
+  const carts = cartManager.getAllCarts();
+
   res.json(carts);
 });
 
